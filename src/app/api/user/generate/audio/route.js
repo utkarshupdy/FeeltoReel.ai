@@ -11,7 +11,11 @@ export async function POST(request) {
   }
 
   const { prompt, model } = await request.json();
-  const audioUrl = await callAIModel(model, prompt, "textToAudio");
 
-  return NextResponse.json({ audioUrl }, { status: 200 });
+  try {
+    const audioUrl = await callAIModel(model, prompt, "textToAudio");
+    return NextResponse.json({ audioUrl }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 }
