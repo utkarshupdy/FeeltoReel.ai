@@ -10,8 +10,8 @@ export default withAuth(
       authorized: ({ token, req }) => {
         const { pathname } = req.nextUrl;
 
-        // ✅ Allow webhook processing (No authentication required)
-        if (pathname.startsWith("/api/webhook")) {
+        // ✅ Allow public video file access
+        if (pathname === "/background-video.mp4") {
           return true;
         }
 
@@ -19,7 +19,8 @@ export default withAuth(
         if (
           pathname.startsWith("/api/auth") ||
           pathname === "/login" ||
-          pathname === "/register"
+          pathname === "/register"||
+          pathname === "/subscription"
         ) {
           return true;
         }
@@ -45,14 +46,5 @@ export default withAuth(
 );
 
 export const config = {
-  matcher: [
-    /**
-     * Match all request paths except:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon)
-     * - public folder
-     */
-    "/((?!_next/static|_next/image|favicon.ico|public/).*)",
-  ],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|background-video.mp4).*)"],
 };

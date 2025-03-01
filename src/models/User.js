@@ -1,10 +1,12 @@
 import mongoose from "mongoose";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";  // ✅ Correct!
+// import  { Schema, model, models } from "mongoose";
+
 
 const UserSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
-  password: { type: String, select: false }, // Required for email/password authentication
+  password: {type: String , required: true }, // Required for email/password authentication
   role: { type: String, enum: ["user", "admin"], default: "admin" }, // Every user is an admin of their account
   credits: { type: Number, default: 1 }, // Free: 1 conversion/day, Pro: 5, ProPlus: unlimited
   maxPromptWords: { type: Number, default: 50 }, // Limits prompt length based on plan
@@ -18,16 +20,16 @@ const UserSchema = new mongoose.Schema({
 });
 
 // Hash password before saving
-UserSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-  next();
-});
+// UserSchema.pre("save", async function (next) {
+//     // if (this.isModified("password")) {
+//     //   this.password = await bcrypt.hash(this.password, 10);
+//     // }
+//     next();
+//   });
 
 // Compare password method
-UserSchema.methods.comparePassword = async function (password) {
-  return bcrypt.compare(password, this.password);
-};
+// UserSchema.methods.comparePassword = async function (password) {
+//   return bcrypt.compare(password, this.password);
+// };
 
 export default mongoose.models.User || mongoose.model("User", UserSchema);

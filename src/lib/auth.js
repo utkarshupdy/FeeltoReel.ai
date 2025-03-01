@@ -19,13 +19,18 @@ export const authOptions = {
 
         try {
           await connectToDatabase();
-          const user = await UserModel.findOne({ email: credentials.email });
+          const user = await UserModel.findOne({ email: credentials.email }).select("+password");
+
 
           if (!user) {
             throw new Error("No user found with this email");
           }
+          console.log(user);
+          console.log(user.password);
+          console.log(credentials.password);
 
-          const isValid = await bcrypt.compare(credentials.password, user.password);
+        //   const isValid = await bcrypt.compare(credentials.password, user.password);
+          const isValid = credentials.password ==user.password ? true : false ;
 
           if (!isValid) {
             throw new Error("Invalid password");
@@ -46,6 +51,13 @@ export const authOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
+        token.email = user.email;
+        token.credits = user.credits;
+        token.subscription = user.subscription;
+        token.maxPromptWords = user.maxPromptWords;
+        token.maxVideoLength = user.maxVideoLength;
+        token.maxAudioLength = user.maxAudioLength;
+        token.name = user.name;
         token.role = user.role;
         token.id = user.id;
       }
@@ -53,6 +65,13 @@ export const authOptions = {
     },
     async session({ session, token }) {
       if (session.user) {
+        session.user.email = token.email;
+        session.user.credits = token.credits;
+        session.user.subscription = token.subscription;
+        session.user.maxPromptWords = token.maxPromptWords;
+        session.user.maxVideoLength = token.maxVideoLength;
+        session.user.maxAudioLength = token.maxAudioLength;
+        session.user.name = token.name;
         session.user.role = token.role;
         session.user.id = token.id;
       }

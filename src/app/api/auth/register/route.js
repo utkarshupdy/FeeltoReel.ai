@@ -5,7 +5,7 @@ import User from "@/models/User";
 
 export async function POST(request) {
   try {
-    const { email, password } = await request.json();
+    const { name , email, password } = await request.json();
 
     if (!email || !password) {
       return NextResponse.json(
@@ -26,14 +26,16 @@ export async function POST(request) {
     }
 
     // Hash password before saving
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create user with default "admin" role
-    await User.create({
+    const user = await User.create({
+      name,
       email,
-      password: hashedPassword,
+      password,
       subscription: { plan: "free", expiresAt: null }, // Default plan
     });
+    console.log(user);
 
     return NextResponse.json(
       { message: "User registered successfully" },
