@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import bcrypt from "bcryptjs";  // ✅ Correct!
+// import bcrypt from "bcryptjs";  // ✅ Correct!
 // import  { Schema, model, models } from "mongoose";
 
 

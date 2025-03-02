@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import {  NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../../../../lib/auth";
 import { callAIModel } from "../../../../../lib/aiModels";
@@ -17,7 +17,7 @@ export async function POST(request) {
 
   try {
     await connectToDatabase();
-    
+
     if (!session.user.subscription) {
       session.user.subscription = { plan: "free", expiresAt: null };
     }

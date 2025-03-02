@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/route"; // Import NextAuth config
+import { authOptions } from "@/lib/auth"; // Import NextAuth config
 import ApiUsage from "../models/ApiUsage";
 
 export const checkSubscriptionLimit = async (req, res, next) => {

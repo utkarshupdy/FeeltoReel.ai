@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { LogOut, User, Video, Music, Shield, Calendar, Zap } from "lucide-react";
+import { LogOut,  Video, Music, Shield, Calendar, Zap } from "lucide-react";
 import { BackgroundBeams } from "@/components/ui/background-beams";
 
 export default function ProfilePage() {
