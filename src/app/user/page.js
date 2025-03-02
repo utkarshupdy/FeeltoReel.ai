@@ -1,6 +1,6 @@
 "use client";
 
-import { useSession, signOut } from "next-auth/react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import Image from "next/image";
@@ -8,18 +8,47 @@ import { LogOut, User, Video, Music, Shield, Calendar, Zap } from "lucide-react"
 import { BackgroundBeams } from "@/components/ui/background-beams";
 
 export default function ProfilePage() {
-  const { data: session } = useSession();
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const router = useRouter();
 
-  if (!session || !session.user) {
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await fetch("/api/user");
+        if (!res.ok) {
+          throw new Error("Failed to fetch user data");
+        }
+        const data = await res.json();
+        setUser(data.user);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-black text-white">
-        <h1 className="text-3xl">Unauthorized. Please log in.</h1>
+        <h1 className="text-3xl">Loading user data...</h1>
       </div>
     );
   }
 
-  const user = session.user;
+  if (error || !user) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-black text-white">
+        <h1 className="text-3xl">{error || "Unauthorized. Please log in."}</h1>
+      </div>
+    );
+  }
+
+  console.log(user);
 
   // ✅ Provide safe defaults
   const subscription = user.subscription || { plan: "free", expiresAt: null };
@@ -104,9 +133,6 @@ export default function ProfilePage() {
 
       <br/>
       <br/>
-
-
-
     </div>
   );
 }

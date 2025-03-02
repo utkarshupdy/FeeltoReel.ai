@@ -31,13 +31,20 @@ export default withAuth(
         }
 
         // ✅ Protect API & user routes (Requires authentication)
+       // ✅ Allow all API routes except protected ones
+      if (pathname.startsWith("/api/")) {
+        // Allow authentication & AI processing API routes without a session
         if (
-          pathname.startsWith("/api/user") ||
-          pathname.startsWith("/dashboard") ||
-          pathname.startsWith("/subscriptions")
+          pathname.startsWith("/api/auth") || 
+          pathname.startsWith("/api/generate")
         ) {
-          return !!token; // User must be logged in
+          return true;
         }
+
+        // Other API routes require authentication
+        return !!token;
+      }
+
 
         return !!token; // ✅ Default: All other routes require authentication
       },

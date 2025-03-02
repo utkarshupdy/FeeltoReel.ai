@@ -3,7 +3,7 @@ import axios from "axios";
 const AI_MODELS = {
   textToVideo: {
     RunwayML: {
-      url: process.env.RUNWAYML_API_URL,
+      url: process.env.RUNWAYML_API_URL,  // e.g., "https://api.runwayml.com/v1/your-endpoint"
       key: process.env.RUNWAYML_API_KEY,
     },
     Pictory: {
@@ -34,7 +34,7 @@ const AI_MODELS = {
     },
     CoquiTTS: {
       url: process.env.COQUI_TTS_API_URL || "http://localhost:5002/api/tts",
-      key: null, // No API key needed for self-hosted Coqui TTS
+      key: null,
     },
   },
 };
@@ -56,25 +56,69 @@ export async function callAIModel(model, prompt, type) {
   if (!apiUrl) {
     throw new Error(`Missing API URL for ${model}`);
   }
+  if (!apiKey) {
+    throw new Error(`Missing API key for ${model}`);
+  }
 
   try {
-    const response = await axios.post(
-      apiUrl,
-      type === "textToAudio"
-        ? { text: prompt, speaker_id: "default", speed: 1.0 } // Coqui TTS format
-        : { prompt },
-      {
-        headers: apiKey ? { "Authorization": `Bearer ${apiKey}` } : {},
-      }
-    );
+    console.log(`📡 Calling ${model} API with prompt:`, prompt);
 
-    if (response.data.audio_url || response.data.videoUrl) {
-      return response.data.audio_url || response.data.videoUrl;
+    const headers = {
+      "X-API-Key": apiKey,
+      "Content-Type": "application/json",
+    };
+
+    const response = await axios.post(apiUrl, { prompt }, { headers });
+
+    console.log(`✅ ${model} Initial Response:`, response.data);
+
+    if (type === "textToVideo" && model === "RunwayML") {
+      const taskId = response.data.id;
+      return await pollRunwayMLForVideo(taskId);
+    }
+
+    if (response.data.output && response.data.output.length > 0) {
+      return response.data.output[0];
     } else {
       throw new Error(`Invalid response from ${model} API.`);
     }
   } catch (error) {
-    console.error(`Error calling ${model}:`, error.message);
+    if (error.response) {
+      console.error(`❌ API Error: ${model}`, error.response.status, error.response.data);
+    } else {
+      console.error(`❌ Error calling ${model}:`, error.message);
+    }
     throw new Error(`Failed to generate media using ${model}`);
   }
+}
+
+/**
+ * Polls the RunwayML API until the video generation task is complete.
+ * @param {string} taskId - The ID of the video generation task.
+ * @returns {string} - The generated video URL.
+ */
+async function pollRunwayMLForVideo(taskId) {
+  const apiUrl = `${process.env.RUNWAYML_API_URL}/tasks/${taskId}`;
+  const headers = {
+    "X-API-Key": process.env.RUNWAYML_API_KEY,
+    "Content-Type": "application/json",
+  };
+
+  for (let attempt = 0; attempt < 10; attempt++) {
+    try {
+      const response = await axios.get(apiUrl, { headers });
+
+      if (response.data.status === "SUCCEEDED" && response.data.output.length > 0) {
+        console.log("✅ Video generated successfully:", response.data.output[0]);
+        return response.data.output[0];
+      }
+
+      console.log(`⏳ Video still processing... Attempt ${attempt + 1}/10`);
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+    } catch (error) {
+      console.error("❌ Error polling RunwayML:", error.message);
+    }
+  }
+
+  throw new Error("❌ RunwayML video generation timed out.");
 }

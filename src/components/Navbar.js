@@ -72,13 +72,13 @@ export default function Header() {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/my-audios" className="block px-4 py-2 hover:bg-gray-700 flex items-center gap-2">
+                  <Link href="/my-audio" className="block px-4 py-2 hover:bg-gray-700 flex items-center gap-2">
                     <Music size={16} />
                     My Audios
                   </Link>
                 </li>
                 <li>
-                  <Link href="/my-videos" className="block px-4 py-2 hover:bg-gray-700 flex items-center gap-2">
+                  <Link href="/my-video" className="block px-4 py-2 hover:bg-gray-700 flex items-center gap-2">
                     <Video size={16} />
                     My Videos
                   </Link>

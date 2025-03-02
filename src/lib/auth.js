@@ -2,7 +2,7 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { connectToDatabase } from "./db";
-import UserModel from "../models/User";
+import User from "../models/User";
 
 export const authOptions = {
   providers: [
@@ -19,7 +19,7 @@ export const authOptions = {
 
         try {
           await connectToDatabase();
-          const user = await UserModel.findOne({ email: credentials.email }).select("+password");
+          const user = await User.findOne({ email: credentials.email }).select("+password");
 
 
           if (!user) {

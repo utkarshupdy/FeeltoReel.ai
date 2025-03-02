@@ -6,6 +6,7 @@ import { useNotification } from "./Notification";
 import { apiClient } from "@/lib/apiClient";
 import { BackgroundLines } from "./ui/background-lines"; // ✅ Import Background Lines
 import { motion } from "framer-motion";
+
 import Link from "next/link";
 
 const AI_MODELS = {
@@ -29,6 +30,8 @@ export default function UploadForm() {
   const [resolution, setResolution] = useState("1080p");
   const [voiceType, setVoiceType] = useState("male");
   const [prompt, setPrompt] = useState("");
+  const [loading, setLoading] = useState(false);
+
 
   if(!session || !session.user){
     return (
@@ -82,9 +85,11 @@ export default function UploadForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     if (prompt.length > promptLimit) {
       showNotification(`Prompt exceeds ${promptLimit} characters.`, "error");
+      setLoading(false);
       return;
     }
 
@@ -95,17 +100,26 @@ export default function UploadForm() {
       ...(type === "textToVideo" ? { resolution } : { voiceType }),
     };
 
-    const endpoint = type === "textToVideo" ? "/api/user/generate/video" : "/api/user/generate/audio";
+    const endpoint = type === "textToVideo" ? "/user/generate/video" : "/user/generate/audio";
 
     try {
-      await apiClient.fetch(endpoint, {
+      const response = await apiClient.fetch(endpoint, {
         method: "POST",
         body: payload,
       });
 
-      showNotification("Generation started successfully!", "success");
+      if (response.videoUrl || response.audioUrl) {
+        // Encode the URL to ensure it works in query params
+        const mediaUrl = encodeURIComponent(response.videoUrl || response.audioUrl);
+        router.push(`/${type === "textToVideo" ? "video" : "audio"}?url=${mediaUrl}`);
+      } else {
+        throw new Error("Failed to generate media.");
+      }
+      
     } catch (error) {
       showNotification(error.message || "Failed to generate media", "error");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -227,9 +241,18 @@ export default function UploadForm() {
                 type === "textToVideo"
                   ? "bg-green-500 hover:bg-green-600"
                   : "bg-blue-500 hover:bg-blue-600"
-              } text-white py-2 rounded`}
+              } text-white py-2 rounded flex items-center justify-center`}
+              disabled={loading}
             >
-              Generate {type === "textToVideo" ? "Video" : "Audio"}
+              {loading ? (
+                <motion.div
+                  className="h-5 w-5 border-4 border-white border-t-transparent rounded-full animate-spin"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                />
+              ) : (
+                `Generate ${type === "textToVideo" ? "Video" : "Audio"}`
+              )}
             </button>
           </form>
         </div>
@@ -251,3 +274,14 @@ export default function UploadForm() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+

@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/db";
 import Payment from "@/models/Payment";
 import User from "@/models/User";
@@ -6,37 +6,54 @@ import User from "@/models/User";
 export async function POST(req) {
   try {
     const body = await req.json();
-    await connectToDatabase();
+    const { razorpay_order_id, razorpay_payment_id } = body; // Ignoring signature verification
 
-    console.log("🔹 Received Razorpay Webhook:", body);
-
-    if (body.event === "payment.captured") {
-      const payment = body.payload.payment.entity;
-
-      // ✅ Find the payment in DB & mark as completed
-      const paymentRecord = await Payment.findOneAndUpdate(
-        { razorpayOrderId: payment.order_id },
-        { razorpayPaymentId: payment.id, status: "completed" }
-      );
-
-      if (!paymentRecord) {
-        return NextResponse.json({ error: "Payment record not found" }, { status: 404 });
-      }
-
-      // ✅ Update user subscription plan
-      await User.findByIdAndUpdate(paymentRecord.userId, {
-        "subscription.plan": paymentRecord.plan,
-        "subscription.expiresAt": new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // +30 days
-      });
-
-      console.log(`✅ Subscription updated for user ${paymentRecord.userId} to plan ${paymentRecord.plan}`);
-
-      return NextResponse.json({ success: true, message: "Payment verified & subscription updated" });
+    if (!razorpay_order_id || !razorpay_payment_id) {
+      return NextResponse.json({ error: "Invalid payment data" }, { status: 400 });
     }
 
-    return NextResponse.json({ success: false, message: "Unhandled event type" });
+    await connectToDatabase();
+
+    // ✅ Retrieve order from DB
+    const paymentRecord = await Payment.findOne({ razorpayOrderId: razorpay_order_id });
+    if (!paymentRecord) {
+      return NextResponse.json({ error: "Order not found" }, { status: 404 });
+    }
+
+    // ✅ Update payment status in DB
+    paymentRecord.razorpayPaymentId = razorpay_payment_id;
+    paymentRecord.status = "completed";
+    await paymentRecord.save();
+
+    // ✅ Determine plan-based limits
+    let planSettings = {};
+    if (paymentRecord.plan === "pro") {
+      planSettings = {
+        "subscription.plan": "pro",
+        "subscription.expiresAt": new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+        credits: 5,
+        maxPromptWords: 100,
+        maxVideoLength: 20,
+        maxAudioLength: 45,
+      };
+    } else if (paymentRecord.plan === "pro-plus") {
+      planSettings = {
+        "subscription.plan": "pro-plus",
+        "subscription.expiresAt": new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+        credits: 20,
+        maxPromptWords: 500,
+        maxVideoLength: 30,
+        maxAudioLength: 60,
+      };
+    }
+
+    // ✅ Upgrade user subscription & update limits
+    await User.findByIdAndUpdate(paymentRecord.userId, planSettings);
+
+    console.log(`✅ Subscription updated for user ${paymentRecord.userId} to ${paymentRecord.plan}`);
+    return NextResponse.json({ success: true, message: "Payment verified & subscription updated" });
   } catch (error) {
-    console.error("❌ Webhook error:", error);
-    return NextResponse.json({ error: "Payment verification failed" }, { status: 500 });
+    console.error("❌ Error verifying payment:", error);
+    return NextResponse.json({ error: "Verification failed" }, { status: 500 });
   }
 }

@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useNotification } from "@/components/Notification";
 import Link from "next/link";
-import { BackgroundLines } from "@/components/ui/background-lines";
+import { Vortex } from "@/components/ui/vortex";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -39,11 +39,11 @@ export default function Login() {
     <div className="relative flex items-center justify-center min-h-screen w-full bg-black text-white">
       {/* Background Effect */}
       <div className="absolute inset-0">
-        <BackgroundLines />
+        <Vortex />
       </div>
 
       {/* Login Form */}
-      <div className="relative max-w-md w-full bg-black bg-opacity-80 p-6 rounded-lg shadow-lg z-10">
+      <div className="relative max-w-md w-full bg-transparent bg-opacity-80 p-6 rounded-lg shadow-lg z-10">
         <h1 className="text-2xl font-bold mb-4 text-center">Login</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Email Input */}

@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useNotification } from "@/components/Notification";
-import { BackgroundLines } from "@/components/ui/background-lines";
-import Footer from "@/components/Footer";
+import { Vortex } from "@/components/ui/vortex";
+// import Footer from "@/components/Footer";
 // import Header from "@/components/Header";
 
 export default function Register() {
@@ -79,7 +79,7 @@ export default function Register() {
       <main className="flex-grow flex items-center justify-center relative">
         {/* ✅ Background Lines in Center */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <BackgroundLines />
+          <Vortex />
         </div>
 
         {/* ✅ Centered Form */}
