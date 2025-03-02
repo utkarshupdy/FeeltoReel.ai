@@ -1,14 +1,12 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-// import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { BackgroundBeams } from "@/components/ui/background-beams";
 
 export default function HomePage() {
   const { data: session } = useSession();
-  // const router = useRouter();
 
   return (
     <div className="relative flex flex-col items-center justify-center min-h-screen bg-black text-white overflow-hidden">
@@ -21,7 +19,6 @@ export default function HomePage() {
         className="absolute inset-0 w-full h-full object-cover opacity-30"
       >
         <source src="/background-video.mp4" type="video/mp4" />
-
       </video>
 
       {/* ⚡ Animated Background Lines */}
@@ -46,7 +43,7 @@ export default function HomePage() {
           animate={{ opacity: 1 }}
           transition={{ delay: 1, duration: 1 }}
         >
-          "Transform your words into stunning videos & lifelike audio."
+          &quot;Transform your words into stunning videos &amp; lifelike audio.&quot;
         </motion.p>
 
         {/* 🌟 Buttons */}

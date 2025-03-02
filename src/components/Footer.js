@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Home  } from "lucide-react";
+import { Home , Twitter , Instagram , Facebook } from "lucide-react";
 import { useNotification } from "./Notification";
 
 export default function Footer() {
