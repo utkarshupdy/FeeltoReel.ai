@@ -1,11 +1,12 @@
 "use client";
 
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Vortex } from "../../components/ui/vortex";
 
-export default function AudioPage() {
+function AudioContent() {
   const searchParams = useSearchParams();
   const encodedUrl = searchParams.get("url"); // Get audio URL from query params
   const audioUrl = encodedUrl ? decodeURIComponent(encodedUrl) : null; // Decode URL
@@ -84,5 +85,13 @@ export default function AudioPage() {
         </div>
       </motion.div>
     </div>
+  );
+}
+
+export default function AudioPage() {
+  return (
+    <Suspense fallback={<div className="text-white text-center p-10">Loading...</div>}>
+      <AudioContent />
+    </Suspense>
   );
 }

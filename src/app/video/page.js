@@ -1,11 +1,12 @@
 "use client";
 
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Vortex } from "../../components/ui/vortex";
 
-export default function VideoPage() {
+function VideoContent() {
   const searchParams = useSearchParams();
   const encodedUrl = searchParams.get("url"); // Get video URL from query params
   const videoUrl = encodedUrl ? decodeURIComponent(encodedUrl) : null; // Decode URL
@@ -84,5 +85,13 @@ export default function VideoPage() {
         </div>
       </motion.div>
     </div>
+  );
+}
+
+export default function VideoPage() {
+  return (
+    <Suspense fallback={<div className="text-white text-center p-10">Loading...</div>}>
+      <VideoContent />
+    </Suspense>
   );
 }
