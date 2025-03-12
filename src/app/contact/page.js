@@ -200,7 +200,7 @@ export default function ContactUs() {
                   </div>
                   <h3 className="text-2xl font-semibold mb-4 text-gray-100">Message Sent!</h3>
                   <p className="text-gray-400 max-w-md mx-auto">
-                    Thank you for contacting us. We'll get back to you as soon as possible.
+                    Thank you for contacting us. We&apos;ll get back to you as soon as possible.
                   </p>
                 </div>
               ) : (
