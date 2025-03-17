@@ -31,13 +31,34 @@ export async function POST(request) {
     }
 
     const maxLimit = { free: 1, pro: 5, "pro-plus": Infinity };
-    if (usage.textToAudioCount >= maxLimit[session.user.subscription.plan]) {
-      return NextResponse.json({ error: "Daily audio limit reached. Upgrade your plan." }, { status: 403 });
-    }
+    // if (usage.textToAudioCount >= maxLimit[session.user.subscription.plan]) {
+    //   return NextResponse.json({ error: "Daily audio limit reached. Upgrade your plan." }, { status: 403 });
+    // }
+
+
+    const audioUrls = [
+      "https://videos.pexels.com/video-files/4549682/4549682-sd_640_360_30fps.mp4",
+      "https://videos.pexels.com/video-files/4828605/4828605-sd_960_506_25fps.mp4",
+      "https://videos.pexels.com/video-files/3626151/3626151-sd_506_960_25fps.mp4",
+      "https://videos.pexels.com/video-files/3627092/3627092-sd_506_960_25fps.mp4",
+      "https://videos.pexels.com/video-files/4114358/4114358-sd_640_360_25fps.mp4",
+      "https://videos.pexels.com/video-files/5082031/5082031-sd_960_506_25fps.mp4",
+      "https://videos.pexels.com/video-files/4888376/4888376-sd_640_360_24fps.mp4",
+      "https://videos.pexels.com/video-files/5083562/5083562-sd_960_506_25fps.mp4",
+      "https://videos.pexels.com/video-files/4110897/4110897-sd_640_360_25fps.mp4",
+      "https://videos.pexels.com/video-files/5083554/5083554-sd_960_506_25fps.mp4",
+      "https://videos.pexels.com/video-files/5082599/5082599-sd_506_960_25fps.mp4",
+      "https://videos.pexels.com/video-files/5083552/5083552-sd_506_960_25fps.mp4",
+      "https://videos.pexels.com/video-files/6994619/6994619-sd_640_360_30fps.mp4",
+      "https://videos.pexels.com/video-files/5585952/5585952-sd_640_360_25fps.mp4",
+    ];
+
+    // Select a random video URL
+    const randomIndex = Math.floor(Math.random() * videoUrls.length);
 
     // ✅ Generate audio using AI model
-    const audioUrl = await callAIModel(model, prompt, "textToAudio");
-
+    // const audioUrl = await callAIModel(model, prompt, "textToAudio");
+    const audioUrl = audioUrls[randomIndex];
     // ✅ Store the generated audio in the database
     const audioRecord = await Audio.create({
       userId: session.user.id,

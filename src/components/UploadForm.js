@@ -306,6 +306,7 @@ const MAX_LIMITS = {
 };
 
 export default function UploadForm() {
+  const router = useRouter();
   const { data: session } = useSession();
   const { showNotification } = useNotification();
 
