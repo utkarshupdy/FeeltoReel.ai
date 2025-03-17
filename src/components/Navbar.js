@@ -102,17 +102,169 @@
 // }
 
 
+// "use client";
+
+// import Link from "next/link";
+// import { useSession, signOut } from "next-auth/react";
+// import { Home, User, Video, Music, DollarSign, LogOut, Sparkles } from "lucide-react";
+// import { motion } from "framer-motion";
+// import { useState } from "react";
+
+// export default function Header() {
+//   const { data: session } = useSession();
+//   const [dropdownOpen, setDropdownOpen] = useState(false);
+
+//   return (
+//     <nav className="bg-gray-900 text-white shadow-lg sticky top-0 z-50 font-[Poppins]">
+//       <div className="container mx-auto flex justify-between items-center p-4">
+//         {/* Logo with Neumorphic Effect */}
+//         <Link href="/" className="text-2xl font-extrabold tracking-wide flex items-center gap-2 hover:text-blue-400 transition-all">
+//           <span className="p-2 rounded-lg bg-gray-800 shadow-[3px_3px_6px_rgba(0,0,0,0.5),-2px_-2px_6px_rgba(255,255,255,0.05)]">
+//             🎥
+//           </span>
+//           <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">
+//             FeelToReel
+//           </span>
+//         </Link>
+
+//         {/* Navigation & User Options */}
+//         <div className="flex items-center gap-4">
+//           {/* Navigation Links with Neumorphic Hover Effect */}
+//           <Link 
+//             href="/" 
+//             className="px-3 py-2 rounded-lg hover:bg-gray-800 hover:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.5),inset_-2px_-2px_5px_rgba(255,255,255,0.05)] flex items-center gap-1 transition-all duration-300"
+//           >
+//             <Home size={18} />
+//             <span className="hidden sm:block">Home</span>
+//           </Link>
+//           <Link 
+//                 href="/contact" 
+//                 className="px-3 py-2 rounded-lg hover:bg-gray-800 hover:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.5),inset_-2px_-2px_5px_rgba(255,255,255,0.05)] transition-all duration-300"
+//               >
+//                 Contact Us
+//               </Link>
+
+//           <Link 
+//             href="/subscription" 
+//             className="px-3 py-2 rounded-lg hover:bg-gray-800 hover:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.5),inset_-2px_-2px_5px_rgba(255,255,255,0.05)] flex items-center gap-1 transition-all duration-300"
+//           >
+//             <DollarSign size={18} />
+//             <span className="hidden sm:block">Pricing</span>
+//           </Link>
+
+//           {/* Generate Button for Logged In Users */}
+//           {session && (
+//             <Link 
+//               href="/upload" 
+//               className="flex items-center gap-2 px-4 py-2 bg-gray-800 rounded-lg text-purple-400 font-semibold shadow-[3px_3px_6px_rgba(0,0,0,0.5),-2px_-2px_6px_rgba(255,255,255,0.05)] hover:shadow-[inset_3px_3px_6px_rgba(0,0,0,0.5),inset_-2px_-2px_6px_rgba(255,255,255,0.05)] transition-all duration-300"
+//             >
+//               <Sparkles size={18} />
+//               <span>Generate</span>
+//             </Link>
+//           )}
+
+//           {/* Auth Buttons for Logged Out Users */}
+//           {!session ? (
+//             <>
+//               <Link 
+//                 href="/login" 
+//                 className="px-3 py-2 rounded-lg hover:bg-gray-800 hover:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.5),inset_-2px_-2px_5px_rgba(255,255,255,0.05)] transition-all duration-300"
+//               >
+//                 Sign In
+//               </Link>
+//               <Link 
+//                 href="/register" 
+//                 className="px-4 py-2 rounded-lg bg-gray-800 text-blue-400 shadow-[3px_3px_6px_rgba(0,0,0,0.5),-2px_-2px_6px_rgba(255,255,255,0.05)] hover:shadow-[inset_3px_3px_6px_rgba(0,0,0,0.5),inset_-2px_-2px_6px_rgba(255,255,255,0.05)] transition-all duration-300"
+//               >
+//                 Sign Up
+//               </Link>
+//             </>
+//           ) : (
+//             /* User Dropdown with Neumorphic Effect */
+//             <div className="relative">
+//               <button 
+//                 className="flex items-center gap-2 focus:outline-none px-3 py-2 rounded-lg hover:bg-gray-800 hover:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.5),inset_-2px_-2px_5px_rgba(255,255,255,0.05)] transition-all duration-300"
+//                 onClick={() => setDropdownOpen(!dropdownOpen)}
+//               >
+//                 <span className="p-1 rounded-full bg-gray-800 shadow-[2px_2px_4px_rgba(0,0,0,0.5),-1px_-1px_4px_rgba(255,255,255,0.05)]">
+//                   <User size={16} />
+//                 </span>
+//                 <span className="hidden sm:block">{session.user.name}</span>
+//               </button>
+
+//               {/* Animated Dropdown Menu with Neumorphic Effect */}
+//               <motion.ul
+//                 initial={{ opacity: 0, y: -10 }}
+//                 animate={{ opacity: dropdownOpen ? 1 : 0, y: dropdownOpen ? 0 : -10 }}
+//                 transition={{ duration: 0.2 }}
+//                 className={`absolute right-0 mt-2 w-48 bg-gray-800 shadow-[5px_5px_10px_rgba(0,0,0,0.5),-3px_-3px_10px_rgba(255,255,255,0.05)] rounded-lg overflow-hidden ${dropdownOpen ? "block" : "hidden"}`}
+//               >
+//                 <li>
+//                   <Link 
+//                     href="/user" 
+//                     className="block px-4 py-2 hover:bg-gray-700 hover:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.3),inset_-1px_-1px_3px_rgba(255,255,255,0.05)]"
+//                   >
+//                     Profile
+//                   </Link>
+//                 </li>
+//                 <li>
+//                   <Link 
+//                     href="/my-audio" 
+//                     className="block px-4 py-2 hover:bg-gray-700 hover:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.3),inset_-1px_-1px_3px_rgba(255,255,255,0.05)] flex items-center gap-2"
+//                   >
+//                     <Music size={16} />
+//                     My Audios
+//                   </Link>
+//                 </li>
+//                 <li>
+//                   <Link 
+//                     href="/my-video" 
+//                     className="block px-4 py-2 hover:bg-gray-700 hover:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.3),inset_-1px_-1px_3px_rgba(255,255,255,0.05)] flex items-center gap-2"
+//                   >
+//                     <Video size={16} />
+//                     My Videos
+//                   </Link>
+//                 </li>
+//                 <li>
+//                   <button
+//                     onClick={() => signOut({ callbackUrl: "/login" })}
+//                     className="block px-4 py-2 text-red-400 hover:bg-gray-700 hover:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.3),inset_-1px_-1px_3px_rgba(255,255,255,0.05)] w-full text-left flex items-center gap-2"
+//                   >
+//                     <LogOut size={16} />
+//                     Sign Out
+//                   </button>
+//                 </li>
+//               </motion.ul>
+//             </div>
+//           )}
+          
+//         </div>
+//       </div>
+//     </nav>
+//   );
+// }
+
+
+
+
 "use client";
 
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
-import { Home, User, Video, Music, DollarSign, LogOut, Sparkles } from "lucide-react";
+import { Home, User, Video, Music, DollarSign, LogOut, Sparkles, Menu, X } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
 
 export default function Header() {
   const { data: session } = useSession();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Close dropdowns when clicking outside
+  const handleClickOutside = () => {
+    if (dropdownOpen) setDropdownOpen(false);
+    if (mobileMenuOpen) setMobileMenuOpen(false);
+  };
 
   return (
     <nav className="bg-gray-900 text-white shadow-lg sticky top-0 z-50 font-[Poppins]">
@@ -127,29 +279,41 @@ export default function Header() {
           </span>
         </Link>
 
-        {/* Navigation & User Options */}
-        <div className="flex items-center gap-4">
+        {/* Mobile Menu Toggle Button */}
+        <div className="lg:hidden">
+          <button 
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="p-2 rounded-lg bg-gray-800 shadow-[3px_3px_6px_rgba(0,0,0,0.5),-2px_-2px_6px_rgba(255,255,255,0.05)]"
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
+
+        {/* Desktop Navigation */}
+        <div className="hidden lg:flex items-center gap-4">
           {/* Navigation Links with Neumorphic Hover Effect */}
           <Link 
             href="/" 
             className="px-3 py-2 rounded-lg hover:bg-gray-800 hover:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.5),inset_-2px_-2px_5px_rgba(255,255,255,0.05)] flex items-center gap-1 transition-all duration-300"
           >
             <Home size={18} />
-            <span className="hidden sm:block">Home</span>
+            <span>Home</span>
           </Link>
+          
           <Link 
-                href="/contact" 
-                className="px-3 py-2 rounded-lg hover:bg-gray-800 hover:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.5),inset_-2px_-2px_5px_rgba(255,255,255,0.05)] transition-all duration-300"
-              >
-                Contact Us
-              </Link>
+            href="/contact" 
+            className="px-3 py-2 rounded-lg hover:bg-gray-800 hover:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.5),inset_-2px_-2px_5px_rgba(255,255,255,0.05)] transition-all duration-300"
+          >
+            Contact Us
+          </Link>
 
           <Link 
             href="/subscription" 
             className="px-3 py-2 rounded-lg hover:bg-gray-800 hover:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.5),inset_-2px_-2px_5px_rgba(255,255,255,0.05)] flex items-center gap-1 transition-all duration-300"
           >
             <DollarSign size={18} />
-            <span className="hidden sm:block">Pricing</span>
+            <span>Pricing</span>
           </Link>
 
           {/* Generate Button for Logged In Users */}
@@ -189,7 +353,7 @@ export default function Header() {
                 <span className="p-1 rounded-full bg-gray-800 shadow-[2px_2px_4px_rgba(0,0,0,0.5),-1px_-1px_4px_rgba(255,255,255,0.05)]">
                   <User size={16} />
                 </span>
-                <span className="hidden sm:block">{session.user.name}</span>
+                <span>{session.user.name}</span>
               </button>
 
               {/* Animated Dropdown Menu with Neumorphic Effect */}
@@ -237,9 +401,128 @@ export default function Header() {
               </motion.ul>
             </div>
           )}
-          
         </div>
       </div>
+
+      {/* Mobile Menu - Slide Down Animation */}
+      <motion.div
+        initial={{ opacity: 0, height: 0 }}
+        animate={{ 
+          opacity: mobileMenuOpen ? 1 : 0,
+          height: mobileMenuOpen ? "auto" : 0
+        }}
+        transition={{ duration: 0.3 }}
+        className="lg:hidden overflow-hidden bg-gray-800"
+      >
+        <div className="flex flex-col p-4 space-y-3">
+          {/* Navigation Links */}
+          <Link 
+            href="/" 
+            className="px-3 py-2 rounded-lg hover:bg-gray-700 hover:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.5),inset_-2px_-2px_5px_rgba(255,255,255,0.05)] flex items-center gap-2 transition-all duration-300"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            <Home size={18} />
+            <span>Home</span>
+          </Link>
+          
+          <Link 
+            href="/contact" 
+            className="px-3 py-2 rounded-lg hover:bg-gray-700 hover:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.5),inset_-2px_-2px_5px_rgba(255,255,255,0.05)] flex items-center gap-2 transition-all duration-300"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Contact Us
+          </Link>
+
+          <Link 
+            href="/subscription" 
+            className="px-3 py-2 rounded-lg hover:bg-gray-700 hover:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.5),inset_-2px_-2px_5px_rgba(255,255,255,0.05)] flex items-center gap-2 transition-all duration-300"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            <DollarSign size={18} />
+            <span>Pricing</span>
+          </Link>
+
+          {/* Generate Button for Logged In Users */}
+          {session && (
+            <Link 
+              href="/upload" 
+              className="flex items-center gap-2 px-4 py-2 bg-gray-700 rounded-lg text-purple-400 font-semibold shadow-[3px_3px_6px_rgba(0,0,0,0.5),-2px_-2px_6px_rgba(255,255,255,0.05)] transition-all duration-300"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <Sparkles size={18} />
+              <span>Generate</span>
+            </Link>
+          )}
+
+          {/* Auth Buttons for Logged Out Users */}
+          {!session ? (
+            <div className="flex flex-col space-y-2">
+              <Link 
+                href="/login" 
+                className="px-3 py-2 rounded-lg hover:bg-gray-700 hover:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.5),inset_-2px_-2px_5px_rgba(255,255,255,0.05)] text-center transition-all duration-300"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Sign In
+              </Link>
+              <Link 
+                href="/register" 
+                className="px-4 py-2 rounded-lg bg-gray-700 text-blue-400 shadow-[3px_3px_6px_rgba(0,0,0,0.5),-2px_-2px_6px_rgba(255,255,255,0.05)] text-center transition-all duration-300"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Sign Up
+              </Link>
+            </div>
+          ) : (
+            /* User Menu Items */
+            <div className="border-t border-gray-700 pt-3 mt-2 space-y-2">
+              <p className="text-sm text-gray-400">Logged in as: {session.user.name}</p>
+              <Link 
+                href="/user" 
+                className="block px-3 py-2 rounded-lg hover:bg-gray-700 hover:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.5),inset_-2px_-2px_5px_rgba(255,255,255,0.05)] flex items-center gap-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <User size={16} />
+                Profile
+              </Link>
+              <Link 
+                href="/my-audio" 
+                className="block px-3 py-2 rounded-lg hover:bg-gray-700 hover:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.5),inset_-2px_-2px_5px_rgba(255,255,255,0.05)] flex items-center gap-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <Music size={16} />
+                My Audios
+              </Link>
+              <Link 
+                href="/my-video" 
+                className="block px-3 py-2 rounded-lg hover:bg-gray-700 hover:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.5),inset_-2px_-2px_5px_rgba(255,255,255,0.05)] flex items-center gap-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <Video size={16} />
+                My Videos
+              </Link>
+              <button
+                onClick={() => {
+                  signOut({ callbackUrl: "/login" });
+                  setMobileMenuOpen(false);
+                }}
+                className="block px-3 py-2 rounded-lg text-red-400 hover:bg-gray-700 hover:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.5),inset_-2px_-2px_5px_rgba(255,255,255,0.05)] flex items-center gap-2 w-full text-left"
+              >
+                <LogOut size={16} />
+                Sign Out
+              </button>
+            </div>
+          )}
+        </div>
+      </motion.div>
+
+      {/* Overlay to detect outside clicks */}
+      {(dropdownOpen || mobileMenuOpen) && (
+        <div 
+          className="fixed inset-0 z-40" 
+          onClick={handleClickOutside}
+          aria-hidden="true"
+        />
+      )}
     </nav>
   );
 }

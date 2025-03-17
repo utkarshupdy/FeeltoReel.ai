@@ -24,7 +24,7 @@ export default function RootLayout({ children }) {
         <Providers>
           <Header />
           {/* ✅ Apply different layouts for home vs other pages */}
-          <main className={pathname === "/" ? "w-full" : "container mx-auto w-full flex-grow"}>
+          <main className={pathname === "/" ? "w-full" : "w-full"}>
             {children}
           </main>
           <Footer />
