@@ -295,14 +295,14 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation"; 
 
 const AI_MODELS = {
-  textToVideo: ["RunwayML", "Pictory", "Synthesia", "Lumen5", "DeepBrain"],
+  textToVideo: ["Tavus", "RunwayML", "Pictory", "Synthesia", "Lumen5", "DeepBrain"],
   textToAudio: ["GoogleTTS", "IBMWatson", "AmazonPolly", "PlayHT", "CoquiTTS"],
 };
 
 const MAX_LIMITS = {
-  free: { duration: 10, promptLimit: 50 },
-  pro: { duration: 15, promptLimit: 100 },
-  "pro-plus": { duration: 20, promptLimit: 200 },
+  free: { duration: 10, promptLimit: 150 },
+  pro: { duration: 15, promptLimit: 200 },
+  "pro-plus": { duration: 20, promptLimit: 500 },
 };
 
 export default function UploadForm() {
@@ -380,6 +380,7 @@ export default function UploadForm() {
       model,
       duration,
       prompt,
+      type ,
       ...(type === "textToVideo" ? { resolution } : { voiceType }),
     };
 
@@ -537,45 +538,51 @@ export default function UploadForm() {
                 <div>
                   <div className="flex justify-between mb-2">
                     <label className="font-semibold text-gray-300">Prompt</label>
-                    <span className="text-sm text-gray-400">{prompt.length}/{promptLimit} chars</span>
+                    <span className="text-sm text-gray-400">{prompt.length}/{200} chars</span>
                   </div>
                   <textarea
                     value={prompt}
                     onChange={(e) => setPrompt(e.target.value)}
                     className={`${neuroFormControl} resize-none h-24`}
-                    maxLength={promptLimit}
+                    maxLength={200}
                     placeholder="Describe what you want to generate..."
                   ></textarea>
                 </div>
 
                 {/* Submit Button */}
                 <motion.button
-                  type="submit"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className={`w-full py-3 rounded-xl font-bold ${
-                    type === "textToVideo"
-                      ? "bg-gray-800 shadow-[4px_4px_10px_rgba(0,0,0,0.5),-4px_-4px_10px_rgba(70,70,70,0.15)] hover:shadow-[2px_2px_5px_rgba(0,0,0,0.5),-2px_-2px_5px_rgba(70,70,70,0.15)]"
-                      : "bg-gray-800 shadow-[4px_4px_10px_rgba(0,0,0,0.5),-4px_-4px_10px_rgba(70,70,70,0.15)] hover:shadow-[2px_2px_5px_rgba(0,0,0,0.5),-2px_-2px_5px_rgba(70,70,70,0.15)]"
-                  } transition-all duration-300 border-t border-l border-gray-700 flex items-center justify-center`}
-                  disabled={loading}
-                >
-                  {loading ? (
-                    <motion.div
-                      className="h-5 w-5 border-3 border-white border-t-transparent rounded-full"
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                    />
-                  ) : (
-                    <span className={`bg-clip-text text-transparent ${
-                      type === "textToVideo" 
-                        ? "bg-gradient-to-r from-cyan-400 to-emerald-500" 
-                        : "bg-gradient-to-r from-blue-400 to-purple-600"
-                    }`}>
-                      Generate {type === "textToVideo" ? "Video" : "Audio"}
-                    </span>
-                  )}
-                </motion.button>
+  type="submit"
+  whileHover={{ scale: 1.02 }}
+  whileTap={{ scale: 0.98 }}
+  className={`w-full py-3 rounded-xl font-bold ${
+    type === "textToVideo"
+      ? "bg-gray-800 shadow-[4px_4px_10px_rgba(0,0,0,0.5),-4px_-4px_10px_rgba(70,70,70,0.15)] hover:shadow-[2px_2px_5px_rgba(0,0,0,0.5),-2px_-2px_5px_rgba(70,70,70,0.15)]"
+      : "bg-gray-800 shadow-[4px_4px_10px_rgba(0,0,0,0.5),-4px_-4px_10px_rgba(70,70,70,0.15)] hover:shadow-[2px_2px_5px_rgba(0,0,0,0.5),-2px_-2px_5px_rgba(70,70,70,0.15)]"
+  } transition-all duration-300 border-t border-l border-gray-700 flex items-center justify-center`}
+  disabled={loading}
+>
+  {loading ? (
+    <div className="flex items-center gap-3">
+      <motion.div
+        className="h-5 w-5 border-3 border-white border-t-transparent rounded-full"
+        animate={{ rotate: 360 }}
+        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+      />
+      <span className="text-gray-400">Waiting for video to be ready...</span>
+    </div>
+  ) : (
+    <span
+      className={`bg-clip-text text-transparent ${
+        type === "textToVideo"
+          ? "bg-gradient-to-r from-cyan-400 to-emerald-500"
+          : "bg-gradient-to-r from-blue-400 to-purple-600"
+      }`}
+    >
+      Generate {type === "textToVideo" ? "Video" : "Audio"}
+    </span>
+  )}
+</motion.button>
+
               </form>
             </div>
           </div>

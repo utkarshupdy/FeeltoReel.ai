@@ -6,6 +6,10 @@ const AI_MODELS = {
       url: process.env.RUNWAYML_API_URL,  // e.g., "https://api.runwayml.com/v1/your-endpoint"
       key: process.env.RUNWAYML_API_KEY,
     },
+    Vadoo:{
+      key: process.env.VADOO_AI_API
+      
+    },
     Pictory: {
       url: process.env.PICTORY_API_URL,
       key: process.env.PICTORY_API_KEY,

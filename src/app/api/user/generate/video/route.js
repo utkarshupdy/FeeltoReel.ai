@@ -4,6 +4,8 @@ import { authOptions } from "../../../../../lib/auth";
 import { connectToDatabase } from "../../../../../lib/db";
 import Video from "../../../../../models/Video";
 import ApiUsage from "../../../../../models/ApiUsage";
+import { callAIModel } from "@/lib/aiModels";
+import { generateTavusVideo } from "@/lib/tavusModel";
 
 export async function POST(request) {
   const session = await getServerSession(authOptions);
@@ -17,7 +19,6 @@ export async function POST(request) {
   try {
     await connectToDatabase();
 
-    // Ensure user has a subscription plan
     if (!session.user.subscription) {
       session.user.subscription = { plan: "free", expiresAt: null };
     }
@@ -39,27 +40,24 @@ export async function POST(request) {
     //   return NextResponse.json({ error: "Daily video limit reached. Upgrade your plan." }, { status: 403 });
     // }
 
-    // Array of video URLs
-    const videoUrls = [
-      "https://videos.pexels.com/video-files/4549682/4549682-sd_640_360_30fps.mp4",
-      "https://videos.pexels.com/video-files/4828605/4828605-sd_960_506_25fps.mp4",
-      "https://videos.pexels.com/video-files/3626151/3626151-sd_506_960_25fps.mp4",
-      "https://videos.pexels.com/video-files/3627092/3627092-sd_506_960_25fps.mp4",
-      "https://videos.pexels.com/video-files/4114358/4114358-sd_640_360_25fps.mp4",
-      "https://videos.pexels.com/video-files/5082031/5082031-sd_960_506_25fps.mp4",
-      "https://videos.pexels.com/video-files/4888376/4888376-sd_640_360_24fps.mp4",
-      "https://videos.pexels.com/video-files/5083562/5083562-sd_960_506_25fps.mp4",
-      "https://videos.pexels.com/video-files/4110897/4110897-sd_640_360_25fps.mp4",
-      "https://videos.pexels.com/video-files/5083554/5083554-sd_960_506_25fps.mp4",
-      "https://videos.pexels.com/video-files/5082599/5082599-sd_506_960_25fps.mp4",
-      "https://videos.pexels.com/video-files/5083552/5083552-sd_506_960_25fps.mp4",
-      "https://videos.pexels.com/video-files/6994619/6994619-sd_640_360_30fps.mp4",
-      "https://videos.pexels.com/video-files/5585952/5585952-sd_640_360_25fps.mp4",
-    ];
+    let videoUrl;
 
-    // Select a random video URL
-    const randomIndex = Math.floor(Math.random() * videoUrls.length);
-    const videoUrl = videoUrls[randomIndex];
+    // Use Tavus AI if the model is "tavus"
+    if (model === "Tavus") {
+      console.log("🔄 Using Tavus AI for video generation...");
+      const tavusResponse = await generateTavusVideo(prompt);
+      if (tavusResponse.error) {
+        return NextResponse.json({ error: "Tavus video generation failed." }, { status: 500 });
+      }
+      videoUrl = tavusResponse.download_url;
+    } else {
+      console.log("🔄 Using custom AI model...");
+      videoUrl = await callAIModel(model, prompt, "textToVideo");
+    }
+
+    if (!videoUrl) {
+      return NextResponse.json({ error: "Video URL not found" }, { status: 500 });
+    }
 
     // Store the generated video in the database
     const videoRecord = await Video.create({
