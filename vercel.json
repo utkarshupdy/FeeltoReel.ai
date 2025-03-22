@@ -1,8 +1,0 @@
-{
-    "functions": {
-      "api/user/generate/video": {
-        "maxDuration": 300
-      }
-    }
-  }
-  
