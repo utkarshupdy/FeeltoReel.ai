@@ -6,7 +6,7 @@ import mongoose from "mongoose";
 const UserSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
-  password: {type: String , required: true }, // Required for email/password authentication
+  password: {type: String }, // Required for email/password authentication
   role: { type: String, enum: ["user", "admin"], default: "admin" }, // Every user is an admin of their account
   credits: { type: Number, default: 1 }, // Free: 1 conversion/day, Pro: 5, ProPlus: unlimited
   maxPromptWords: { type: Number, default: 50 }, // Limits prompt length based on plan
