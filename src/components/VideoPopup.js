@@ -85,7 +85,7 @@ function VideoPopup({ videoId, onClose }) {
               Close
             </button>
             
-            <Link href="/my-videos">
+            <Link href="/my-video">
               <button 
                 className="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white font-medium transition-all duration-300"
                 style={{ boxShadow: "5px 5px 10px #0c0c0c, -5px -5px 10px #222222" }}
